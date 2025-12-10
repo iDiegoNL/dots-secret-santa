@@ -13,6 +13,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use Maize\Encryptable\Encryptable;
 
 class User extends Authenticatable implements FilamentUser, HasName
 {
@@ -37,8 +38,10 @@ class User extends Authenticatable implements FilamentUser, HasName
      */
     protected $fillable = [
         'name',
+        'decoded_name',
         'email',
         'password',
+        'login_code',
         'secret_santa_id',
         'is_admin',
         'is_participating',
@@ -51,6 +54,7 @@ class User extends Authenticatable implements FilamentUser, HasName
      */
     protected $hidden = [
         'password',
+        'login_code',
         'two_factor_secret',
         'two_factor_recovery_codes',
         'remember_token',
@@ -66,6 +70,7 @@ class User extends Authenticatable implements FilamentUser, HasName
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'login_code' => Encryptable::class,
             'is_admin' => 'boolean',
             'is_participating' => 'boolean',
         ];
@@ -83,11 +88,6 @@ class User extends Authenticatable implements FilamentUser, HasName
             ->implode('');
     }
 
-    public function getDecodedNameAttribute(): string
-    {
-        return decode_binary($this->name);
-    }
-
     public function givingTo(): BelongsTo
     {
         return $this->belongsTo(User::class, 'secret_santa_id');
@@ -100,7 +100,11 @@ class User extends Authenticatable implements FilamentUser, HasName
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->is_admin;
+        if ($panel->getId() === 'admin') {
+            return $this->is_admin;
+        }
+
+        return true;
     }
 
     public function getFilamentName(): string
@@ -116,5 +120,25 @@ class User extends Authenticatable implements FilamentUser, HasName
     public function giftHints(): HasOne
     {
         return $this->hasOne(GiftHint::class);
+    }
+
+    public function generateLoginCode(): User
+    {
+        $attempts = 0;
+        do {
+            if (++$attempts > 1000) {
+                throw new \RuntimeException('Unable to generate unique login code.');
+            }
+
+            $code = (string) random_int(111111, 999999);
+
+            $exists = static::where('login_code', $code)
+                ->where('id', '!=', $this->id)
+                ->exists();
+        } while ($exists);
+
+        $this->update(['login_code' => $code]);
+
+        return $this;
     }
 }

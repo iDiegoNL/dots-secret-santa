@@ -107,6 +107,16 @@ class ListUsers extends ListRecords
                     }
                 })
                 ->requiresConfirmation(),
+
+            Action::make('assignLoginCodes')
+                ->action(function (): void {
+                    User::query()
+                        ->whereNull('login_code')
+                        ->each(function (User $user) {
+                            $user->generateLoginCode();
+                        });
+                })
+                ->requiresConfirmation(),
         ];
     }
 }

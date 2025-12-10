@@ -2,9 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Auth\Login;
 use App\Filament\Main\Pages\Homepage;
-use DutchCodingCompany\FilamentSocialite\FilamentSocialitePlugin;
-use DutchCodingCompany\FilamentSocialite\Provider;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -25,12 +24,12 @@ class MainPanelProvider extends PanelProvider
     {
         return $panel
             ->id('main')
-            ->path('santa')
+            ->path('/')
             ->brandName("🎄 Crimbus at Dot's")
-            ->login()
+            ->login(Login::class)
             ->navigation(false)
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Fuchsia,
             ])
             ->discoverResources(in: app_path('Filament/Main/Resources'), for: 'App\Filament\Main\Resources')
             ->discoverPages(in: app_path('Filament/Main/Pages'), for: 'App\Filament\Main\Pages')
@@ -51,25 +50,6 @@ class MainPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ])
-            ->plugin(
-                FilamentSocialitePlugin::make()
-                    // (required) Add providers corresponding with providers in `config/services.php`.
-                    ->providers([
-                        // Create a provider 'gitlab' corresponding to the Socialite driver with the same name.
-                        Provider::make('telegram')
-                            ->label('Telegram')
-                            ->icon('si-telegram')
-                            ->color(Color::hex('#2f2a6b'))
-                            ->outlined(false)
-                            ->stateless(false)
-                            ->scopes(['...'])
-                            ->with(['...']),
-                    ])
-                // (optional) Override the panel slug to be used in the oauth routes. Defaults to the panel's configured path.
-                // (optional) Enable/disable registration of new (socialite-) users.
-                // (optional) Enable/disable registration of new (socialite-) users using a callback.
-                // In this example, a login flow can only continue if there exists a user (Authenticatable) already.
-            );
+            ]);
     }
 }

@@ -2,13 +2,12 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
+use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Field;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
-use Illuminate\Database\Eloquent\Builder;
 
 class UserForm
 {
@@ -28,18 +27,8 @@ class UserForm
                             }),
                     ),
 
-                Select::make('givingTo')
-                    ->label('Giving gift to')
-                    ->relationship(
-                        name: 'givingTo',
-                        titleAttribute: 'name',
-                        modifyQueryUsing: fn (Builder $query) => $query->doesntHave('receivingFrom'),
-                        ignoreRecord: true
-                    )
-                    ->searchable()
-                    ->preload()
-                    ->optionsLimit(999)
-                    ->placeholder('Not assigned yet'),
+                TextInput::make('login_code')
+                    ->formatStateUsing(fn (User $record) => $record->login_code),
 
                 Toggle::make('is_participating')
                     ->label('Participating in Secret Santa')

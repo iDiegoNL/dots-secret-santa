@@ -2,8 +2,12 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
+use App\Models\User;
+use Filament\Actions\Action;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Notifications\Notification;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\FontFamily;
 
 class UserInfolist
 {
@@ -11,25 +15,32 @@ class UserInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('name'),
-                TextEntry::make('email')
-                    ->label('Email address'),
-                TextEntry::make('email_verified_at')
-                    ->dateTime()
-                    ->placeholder('-'),
+                TextEntry::make('name')
+                    ->helperText(fn (User $record) => $record->decoded_name),
+
+                TextEntry::make('login_code')
+                    ->placeholder('-')
+                    ->fontFamily(FontFamily::Mono)
+                    ->copyable()
+                    ->hintAction(
+                        Action::make('generateLoginCode')
+                            ->icon('heroicon-o-arrow-path')
+                            ->visible(fn (User $record) => $record->login_code === null)
+                            ->action(function (User $record) {
+                                $record->generateLoginCode();
+
+                                Notification::make()
+                                    ->title('Login code generated')
+                                    ->success()
+                                    ->send();
+                            })
+                    ),
+
                 TextEntry::make('created_at')
                     ->dateTime()
                     ->placeholder('-'),
+
                 TextEntry::make('updated_at')
-                    ->dateTime()
-                    ->placeholder('-'),
-                TextEntry::make('two_factor_secret')
-                    ->placeholder('-')
-                    ->columnSpanFull(),
-                TextEntry::make('two_factor_recovery_codes')
-                    ->placeholder('-')
-                    ->columnSpanFull(),
-                TextEntry::make('two_factor_confirmed_at')
                     ->dateTime()
                     ->placeholder('-'),
             ]);

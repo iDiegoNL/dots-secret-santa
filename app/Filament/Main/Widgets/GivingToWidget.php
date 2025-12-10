@@ -83,7 +83,7 @@ class GivingToWidget extends Widget implements HasSchemas
                                             ->placeholder('-')
                                             ->formatStateUsing(fn (string $state) => ucwords($state)),
 
-                                        TextEntry::make('colors')
+                                        TextEntry::make('brights_or_neutrals')
                                             ->placeholder('-')
                                             ->formatStateUsing(fn (string $state) => ucwords($state)),
                                     ]),

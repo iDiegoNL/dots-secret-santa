@@ -5,7 +5,6 @@ namespace App\Filament\Main\Widgets;
 use App\Enums\GiftPreference;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Fieldset;
@@ -36,18 +35,41 @@ class GiftHintsWidget extends Widget implements HasSchemas
                 Fieldset::make('Favourites')
                     ->columns()
                     ->schema([
-                        TextInput::make('foods'),
-                        TextInput::make('drinks'),
-                        TextInput::make('snacks'),
-                        TextInput::make('candies'),
-                        TextInput::make('restaurants'),
-                        TextInput::make('colors'),
-                        TextInput::make('scents'),
-                        TextInput::make('sports'),
-                        TextInput::make('stores'),
-                        TextInput::make('books'),
-                        TextInput::make('music'),
-                        TextInput::make('hobbies'),
+                        Textarea::make('foods')
+                            ->maxLength(255),
+
+                        Textarea::make('drinks')
+                            ->maxLength(255),
+
+                        Textarea::make('snacks')
+                            ->maxLength(255),
+
+                        Textarea::make('candies')
+                            ->maxLength(255),
+
+                        Textarea::make('restaurants')
+                            ->maxLength(255),
+
+                        Textarea::make('colors')
+                            ->maxLength(255),
+
+                        Textarea::make('scents')
+                            ->maxLength(255),
+
+                        Textarea::make('sports')
+                            ->maxLength(255),
+
+                        Textarea::make('stores')
+                            ->maxLength(255),
+
+                        Textarea::make('books')
+                            ->maxLength(255),
+
+                        Textarea::make('music')
+                            ->maxLength(255),
+
+                        Textarea::make('hobbies')
+                            ->maxLength(255),
                     ]),
 
                 Group::make()
@@ -87,7 +109,7 @@ class GiftHintsWidget extends Widget implements HasSchemas
                                         'salty' => 'Salty',
                                     ]),
 
-                                ToggleButtons::make('colors')
+                                ToggleButtons::make('brights_or_neutrals')
                                     ->inline()
                                     ->options([
                                         'brights' => 'Brights',
@@ -104,8 +126,9 @@ class GiftHintsWidget extends Widget implements HasSchemas
                     ->label('Please avoid giving me...')
                     ->rows(3),
 
-                TextInput::make('allergies')
+                Textarea::make('allergies')
                     ->label('Allergies / Dietary restrictions')
+                    ->maxLength(255)
                     ->columnSpanFull(),
             ])
             ->statePath('data');

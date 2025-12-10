@@ -10,9 +10,12 @@ class Homepage extends Page
 {
     protected string $view = 'filament.main.pages.homepage';
 
-    protected static ?string $title = "🧑‍🎄 Dot's Secret Santa";
-
     protected static ?string $slug = '/';
+
+    public function getTitle(): string
+    {
+        return '🧑‍🎄 Hi '.auth()->user()->decoded_name.'!';
+    }
 
     protected function getHeaderWidgets(): array
     {
