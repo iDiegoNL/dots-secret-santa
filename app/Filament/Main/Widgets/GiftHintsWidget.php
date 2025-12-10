@@ -81,7 +81,8 @@ class GiftHintsWidget extends Widget implements HasSchemas
 
                 Group::make()
                     ->schema([
-                        Fieldset::make('Preferences')
+                        Fieldset::make('preferences_fieldset')
+                            ->label('Preferences')
                             ->columns(1)
                             ->schema([
                                 CheckboxList::make('preferences')
