@@ -27,7 +27,8 @@ class UsersTable
 
                 TextColumn::make('decoded_name')
                     ->label('Name (decoded)')
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->copyable(),
 
                 TextColumn::make('login_code')
                     ->toggleable(isToggledHiddenByDefault: true)
