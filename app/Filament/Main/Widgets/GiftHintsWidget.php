@@ -4,6 +4,7 @@ namespace App\Filament\Main\Widgets;
 
 use App\Enums\GiftPreference;
 use App\Models\GiftHint;
+use Filament\Actions\Action;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\ToggleButtons;
@@ -87,6 +88,13 @@ class GiftHintsWidget extends Widget implements HasSchemas
                                 CheckboxList::make('preferences')
                                     ->hiddenLabel()
                                     ->options(GiftPreference::class)
+                                    ->bulkToggleable()
+                                    ->selectAllAction(
+                                        fn (Action $action) => $action->label('Give me everything!'),
+                                    )
+                                    ->deselectAllAction(
+                                        fn (Action $action) => $action->label("Fuck you I'm picky."),
+                                    )
                                     ->columns(3),
                             ]),
 
@@ -98,6 +106,10 @@ class GiftHintsWidget extends Widget implements HasSchemas
                                     ->options([
                                         'tea' => 'Tea',
                                         'coffee' => 'Coffee',
+                                    ])
+                                    ->icons([
+                                        'tea' => 'tabler-leaf',
+                                        'coffee' => 'tabler-coffee',
                                     ]),
 
                                 ToggleButtons::make('beer_wine_or_spirits')
@@ -107,6 +119,11 @@ class GiftHintsWidget extends Widget implements HasSchemas
                                         'beer' => 'Beer',
                                         'wine' => 'Wine',
                                         'spirits' => 'Spirits',
+                                    ])
+                                    ->icons([
+                                        'beer' => 'tabler-beer',
+                                        'wine' => 'tabler-glass-full',
+                                        'spirits' => 'tabler-glass-cocktail',
                                     ]),
 
                                 ToggleButtons::make('sweet_or_salty')
@@ -114,6 +131,10 @@ class GiftHintsWidget extends Widget implements HasSchemas
                                     ->options([
                                         'sweet' => 'Sweet',
                                         'salty' => 'Salty',
+                                    ])
+                                    ->icons([
+                                        'sweet' => 'tabler-candy',
+                                        'salty' => 'tabler-salt',
                                     ]),
 
                                 ToggleButtons::make('brights_or_neutrals')
@@ -121,6 +142,10 @@ class GiftHintsWidget extends Widget implements HasSchemas
                                     ->options([
                                         'brights' => 'Brights',
                                         'neutrals' => 'Neutrals',
+                                    ])
+                                    ->icons([
+                                        'brights' => 'tabler-palette',
+                                        'neutrals' => 'tabler-color-filter',
                                     ]),
                             ]),
                     ]),
