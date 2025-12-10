@@ -7,7 +7,29 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class GiftHint extends Model
 {
-    protected $guarded = [];
+    protected $fillable = [
+        'user_id',
+        'foods',
+        'drinks',
+        'snacks',
+        'candies',
+        'restaurants',
+        'colors',
+        'scents',
+        'sports',
+        'stores',
+        'books',
+        'music',
+        'hobbies',
+        'preferences',
+        'tea_or_coffee',
+        'beer_wine_or_spirits',
+        'sweet_or_salty',
+        'id_really_want',
+        'please_avoid',
+        'allergies',
+        'brights_or_neutrals',
+    ];
 
     protected function casts(): array
     {
