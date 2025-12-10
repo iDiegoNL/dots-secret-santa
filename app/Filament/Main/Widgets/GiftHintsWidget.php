@@ -3,6 +3,7 @@
 namespace App\Filament\Main\Widgets;
 
 use App\Enums\GiftPreference;
+use App\Models\GiftHint;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\ToggleButtons;
@@ -22,14 +23,20 @@ class GiftHintsWidget extends Widget implements HasSchemas
 
     public ?array $data = [];
 
+    public ?GiftHint $giftHints = null;
+
     public function mount(): void
     {
-        $this->form->fill(auth()->user()->giftHints?->toArray());
+        $this->giftHints = auth()->user()->giftHints;
+
+        $this->form->fill($this->giftHints?->toArray());
     }
 
     public function form(Schema $schema): Schema
     {
         return $schema
+            ->statePath('data')
+            ->model($this->giftHints ?? GiftHint::class)
             ->columns()
             ->components([
                 Fieldset::make('Favourites')
@@ -130,8 +137,7 @@ class GiftHintsWidget extends Widget implements HasSchemas
                     ->label('Allergies / Dietary restrictions')
                     ->maxLength(255)
                     ->columnSpanFull(),
-            ])
-            ->statePath('data');
+            ]);
     }
 
     public function create(): void
