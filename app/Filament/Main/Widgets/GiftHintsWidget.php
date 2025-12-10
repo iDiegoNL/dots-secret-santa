@@ -79,31 +79,18 @@ class GiftHintsWidget extends Widget implements HasSchemas
                             ->schema([
                                 CheckboxList::make('preferences')
                                     ->hiddenLabel()
-                                    ->options(collect(GiftPreference::cases())->mapWithKeys(function ($case) {
-                                        return [$case->value => $case->getLabel()];
-                                    })->toArray())
+                                    ->options(GiftPreference::class)
                                     ->columns(3)
                                     ->dehydrateStateUsing(function ($state) {
-                                        if (empty($state)) {
-                                            return [];
-                                        }
                                         if (!is_array($state)) {
                                             return $state;
                                         }
-                                        return array_values(array_map(function ($preference) {
+                                        return array_map(function ($preference) {
                                             if ($preference instanceof GiftPreference) {
                                                 return $preference->value;
                                             }
-                                            return (string) $preference;
-                                        }, $state));
-                                    })
-                                    ->afterStateHydrated(function ($component, $state) {
-                                        // Ensure state is always an array
-                                        if ($state === null) {
-                                            $component->state([]);
-                                        } elseif (!is_array($state)) {
-                                            $component->state([$state]);
-                                        }
+                                            return $preference;
+                                        }, $state);
                                     }),
                             ]),
 
@@ -164,19 +151,16 @@ class GiftHintsWidget extends Widget implements HasSchemas
 
         // Ensure preferences array contains string values, not enum instances
         if (isset($data['preferences']) && is_array($data['preferences'])) {
-            $data['preferences'] = array_values(array_filter(array_map(function ($preference) {
+            $data['preferences'] = array_map(function ($preference) {
                 if ($preference instanceof GiftPreference) {
                     return $preference->value;
                 }
-                return (string) $preference;
-            }, $data['preferences'])));
-        } else {
-            $data['preferences'] = [];
+                return $preference;
+            }, $data['preferences']);
         }
 
-        // Use updateOrCreate with explicit where clause
         auth()->user()->giftHints()->updateOrCreate(
-            ['user_id' => auth()->id()],
+            [],
             $data,
         );
 
