@@ -80,7 +80,18 @@ class GiftHintsWidget extends Widget implements HasSchemas
                                 CheckboxList::make('preferences')
                                     ->hiddenLabel()
                                     ->options(GiftPreference::class)
-                                    ->columns(3),
+                                    ->columns(3)
+                                    ->dehydrateStateUsing(function ($state) {
+                                        if (!is_array($state)) {
+                                            return $state;
+                                        }
+                                        return array_map(function ($preference) {
+                                            if ($preference instanceof GiftPreference) {
+                                                return $preference->value;
+                                            }
+                                            return $preference;
+                                        }, $state);
+                                    }),
                             ]),
 
                         Fieldset::make('This or that')
@@ -137,6 +148,16 @@ class GiftHintsWidget extends Widget implements HasSchemas
     public function create(): void
     {
         $data = $this->form->getState();
+
+        // Ensure preferences array contains string values, not enum instances
+        if (isset($data['preferences']) && is_array($data['preferences'])) {
+            $data['preferences'] = array_map(function ($preference) {
+                if ($preference instanceof GiftPreference) {
+                    return $preference->value;
+                }
+                return $preference;
+            }, $data['preferences']);
+        }
 
         auth()->user()->giftHints()->updateOrCreate(
             [],
