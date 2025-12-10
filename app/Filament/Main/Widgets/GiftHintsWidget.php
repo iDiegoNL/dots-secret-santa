@@ -5,6 +5,7 @@ namespace App\Filament\Main\Widgets;
 use App\Enums\GiftPreference;
 use App\Models\GiftHint;
 use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Notifications\Notification;
@@ -81,14 +82,13 @@ class GiftHintsWidget extends Widget implements HasSchemas
 
                 Group::make()
                     ->schema([
-                        Fieldset::make('preferences_fieldset')
-                            ->label('Preferences')
+                        Fieldset::make('Preferences')
                             ->columns(1)
                             ->schema([
-                                CheckboxList::make('preferences')
+                                Select::make('preferences')
                                     ->hiddenLabel()
-                                    ->options(GiftPreference::class)
-                                    ->columns(3),
+                                    ->multiple()
+                                    ->options(GiftPreference::class),
                             ]),
 
                         Fieldset::make('This or that')
