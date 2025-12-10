@@ -144,10 +144,11 @@ class GiftHintsWidget extends Widget implements HasSchemas
     {
         $data = $this->form->getState();
 
-        auth()->user()->giftHints()->updateOrCreate(
-            [],
-            $data,
-        );
+        if (! $this->giftHints) {
+            auth()->user()->giftHints()->create($data);
+        } else {
+            $this->giftHints->update($data);
+        }
 
         Notification::make()
             ->title('Gift hints saved successfully.')
